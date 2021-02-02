@@ -5,7 +5,7 @@
 #
 
 """
-<plugin key="ShellyEMPlugin" name="Shelly EM Plugin" author="Iqas" version="1.0.0" wikilink="https://github.com/iqas/ShellyEMPlugin/wiki" externallink="https://github.com/iqas/ShellyEMPlugin">
+<plugin key="ShellyEMPlugin" name="Shelly EM Plugin" author="Iqas" version="1.0.1" wikilink="https://github.com/iqas/ShellyEMPlugin/wiki" externallink="https://github.com/iqas/ShellyEMPlugin">
     <description>
         <h2>Shelly EM Plugin</h2><br/>
         Plugin for controlling Shelly EM devices.
@@ -17,6 +17,7 @@
             <li>Model is the type of Shelly EM device you want to add. Shelly EM or Shelly 3EM</li>
             <li>Batery Meter is the clamp number connected to battery line(optional) </li>
             <li>Grid meter is the clamp number connected to the grid line. The grid type divide produced and returned </li>
+            <li>The clamp that is not assigned will be assumed as solar </li>
         </ul>
         <br/><br/>
     </description>
@@ -280,11 +281,13 @@ def updateSHELLYEM(self, json_request):
     #Power
     Devices[11].Update(nValue=0, sValue=str(meterpower1))
     Devices[12].Update(nValue=0, sValue=str(meterpower2))
-    Devices[13].Update(nValue=0, sValue=str(meterpower3))
+    if (self.type == "3"):
+        Devices[13].Update(nValue=0, sValue=str(meterpower3))
     #Total
     Devices[21].Update(nValue=0,sValue=str(meterpower1)+";"+str(self.total1))
     Devices[22].Update(nValue=0,sValue=str(meterpower2)+";"+str(self.total2))
-    Devices[23].Update(nValue=0,sValue=str(meterpower3)+";"+str(self.total3))
+    if (self.type == "3"):
+        Devices[23].Update(nValue=0,sValue=str(meterpower3)+";"+str(self.total3))
     
     if (self.grid  == 1): 
         if (meterpower1 < 0): Devices[26].Update(nValue=0,sValue=str(0)+";"+str(self.total1))
@@ -300,8 +303,12 @@ def updateSHELLYEM(self, json_request):
                 produc_kwh = self.total2
         else : 
             if (self.battery == 2):
-                produced = meterpower3
-                produc_kwh = meterenergy3
+                if (self.type == "3"):
+                    produced = meterpower3
+                    produc_kwh = meterenergy3
+                else: # No solar clamp
+                    produced = 0
+                    produc_kwh = 0
                 if (meterpower2 < 0): 
                     Devices[27].Update(nValue=0,sValue=str(meterpower2)+";"+str(meterenergy_returned2))
                     Devices[28].Update(nValue=0,sValue=str(0)+";"+str(meterenergy2))
@@ -334,8 +341,12 @@ def updateSHELLYEM(self, json_request):
                 produc_kwh = self.total1
         else : 
             if (self.battery == 1):
-                produced = meterpower3
-                produc_kwh = meterenergy3
+                if (self.type == "3"):
+                    produced = meterpower3
+                    produc_kwh = meterenergy3
+                else: # No solar clamp
+                    produced = 0
+                    produc_kwh = 0
                 if (meterpower1 < 0): 
                     Devices[27].Update(nValue=0,sValue=str(meterpower1)+";"+str(meterenergy_returned1))
                     Devices[28].Update(nValue=0,sValue=str(0)+";"+str(meterenergy1))
