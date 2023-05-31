@@ -211,6 +211,11 @@ def createSHELLYEM(self, json_request):
     Domoticz.Device(Name=self.name2 + "_power", Unit=12, Used=1, Type=248, Subtype=1).Create()
     if (self.type == "3"):
         Domoticz.Device(Name=self.name3 + "_power", Unit=13, Used=1, Type=248, Subtype=1).Create()
+    # Voltages
+    Domoticz.Device(Name=self.name1 + "_voltage", Unit=14, Used=1, Type=243, Subtype=8).Create()
+    Domoticz.Device(Name=self.name2 + "_voltage", Unit=15, Used=1, Type=243, Subtype=8).Create()
+    if (self.type == "3"):
+        Domoticz.Device(Name=self.name3 + "_voltage", Unit=16, Used=1, Type=243, Subtype=8).Create()
     # Totals
     Domoticz.Device(Name=self.name1 + "_kWh", Unit=21, Used=1, Type=243, Subtype=29).Create()
     Domoticz.Device(Name=self.name2 + "_kWh", Unit=22, Used=1, Type=243, Subtype=29).Create()
@@ -283,6 +288,11 @@ def updateSHELLYEM(self, json_request):
     Devices[12].Update(nValue=0, sValue=str(meterpower2))
     if (self.type == "3"):
         Devices[13].Update(nValue=0, sValue=str(meterpower3))
+    #Voltage
+    Devices[14].Update(nValue=0, sValue=str(metervoltage1))
+    Devices[15].Update(nValue=0, sValue=str(metervoltage2))
+    if (self.type == "3"):
+        Devices[16].Update(nValue=0, sValue=str(metervoltage3))
     #Total
     Devices[21].Update(nValue=0,sValue=str(meterpower1)+";"+str(self.total1))
     Devices[22].Update(nValue=0,sValue=str(meterpower2)+";"+str(self.total2))
